@@ -4,6 +4,8 @@ import { getStorage } from '../../background/storage';
 import { BackgroundMachineContext } from '../../background/types';
 
 import { contextStream } from '../../common/messages';
+import Navbar from '../components/Navbar';
+import Collection from '../components/Collection';
 
 const App = (): JSX.Element => {
   const [context, setContext] = useState(
@@ -26,9 +28,8 @@ const App = (): JSX.Element => {
 
   return (
     <div>
-      <h1>Popup Page</h1>
-      <p>If you are seeing this, React is working!</p>
-      <p>{JSON.stringify(context)}</p>
+      <Navbar context={context} />
+      <Collection context={context} />
     </div>
   );
 };
