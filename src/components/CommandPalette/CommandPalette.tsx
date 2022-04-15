@@ -35,6 +35,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
   // Refs
   const inputRef = useRef<HTMLInputElement>(null);
+  const boundaryRef = createRef<HTMLDivElement>();
 
   // Event Handlers
   const onSearchChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -75,18 +76,50 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     currentIndex: number;
     availableElements: Array<HTMLElement>;
   }) => {
+    // console.log(event);
     if (currentIndex === -1) {
       inputRef?.current?.focus();
       setHighlightedTab(null);
     }
     let nextElement: HTMLElement | undefined;
-    if (!event.metaKey && !event.ctrlKey) {
+    if (!event.metaKey && !event.ctrlKey && !event.altKey) {
       if (event.key === 'ArrowDown') {
         nextElement = availableElements[currentIndex + 1];
         setHighlightedTab(filteredTabs.tabs[currentIndex]);
       } else {
         nextElement = availableElements[currentIndex - 1];
         setHighlightedTab(filteredTabs.tabs[currentIndex - 2]);
+      }
+    } else if (event.altKey) {
+      const containerBoundary = document
+        .getElementById('altBoundary')
+        ?.getBoundingClientRect();
+      if (event.key === 'ArrowDown') {
+        if (currentIndex - 1 >= filteredTabs.tabs.length - 1) {
+          nextElement = availableElements[currentIndex];
+          setHighlightedTab(filteredTabs.tabs[filteredTabs.tabs.length - 1]);
+        }
+        const offScreenIndex = availableElements.findIndex(
+          (element) =>
+            element.getBoundingClientRect().top >
+            (containerBoundary?.bottom ?? 0),
+        );
+        const finalIndex =
+          offScreenIndex > 0 ? offScreenIndex - 1 : filteredTabs.tabs.length;
+        nextElement = availableElements[finalIndex];
+        setHighlightedTab(
+          filteredTabs.tabs[finalIndex > 1 ? finalIndex - 1 : 1],
+        );
+      } else {
+        const offScreenIndex = availableElements.findIndex(
+          (element) =>
+            element.getBoundingClientRect().top > (containerBoundary?.top ?? 0),
+        );
+        const finalIndex = offScreenIndex > 0 ? offScreenIndex - 1 : 0;
+        nextElement = availableElements[finalIndex];
+        setHighlightedTab(
+          filteredTabs.tabs[finalIndex > 1 ? finalIndex - 1 : 1],
+        );
       }
     } else if (event.key === 'ArrowDown') {
       nextElement = availableElements[availableElements.length - 1];
@@ -111,7 +144,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     },
     'a,input',
   );
-  const boundaryRef = createRef<HTMLDivElement>();
 
   const groupSelected = (groupId: string) => {
     const box = boundaryRef?.current?.getBoundingClientRect();
@@ -184,7 +216,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                 onChange={onSearchChange}
               />
             </div>
-            <div className={styles.options}>
+            <div className={styles.options} id={'altBoundary'}>
               {filteredTabs.tabs.map((option: Tab, index: number) => (
                 <CommandPaletteOption
                   key={index}
