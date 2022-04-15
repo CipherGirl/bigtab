@@ -22,6 +22,7 @@ import {
   ContextMenuEvent,
   EventOnCompleteData,
 } from '../common/types';
+import { updateTabVisits } from './assigners';
 
 const invokeWrapper = async <T, V>(
   func: (context: BackgroundMachineContext, arg?: V) => Promise<T>,
@@ -119,7 +120,6 @@ const clickEventStates = CLICK_EVENTS.reduce(
   >,
 );
 
-// TODO: Add Events & State for Updating Tab Visits
 const BackgroundMachineConfig: MachineConfig<
   BackgroundMachineContext,
   StateSchema<BackgroundMachineContext> & {
@@ -138,6 +138,7 @@ const BackgroundMachineConfig: MachineConfig<
       on: {
         CONTEXT_MENU: 'contextMenu',
         CLICK_ACTION: 'clickAction',
+        VISIT_TAB: 'visitTab',
       },
       entry: assign({ retries: 0 }),
     },
@@ -146,6 +147,10 @@ const BackgroundMachineConfig: MachineConfig<
     },
     clickAction: {
       always: clickActionTransitions,
+    },
+    visitTab: {
+      entry: updateTabVisits,
+      always: 'idle',
     },
   },
 };

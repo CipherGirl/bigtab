@@ -1,4 +1,3 @@
-// TODO: Add lastVisited & totalVisits
 export type Tab = {
   id: string;
   url: string;
@@ -7,6 +6,8 @@ export type Tab = {
   group: string;
   firstCreated: number;
   lastModified: number;
+  lastVisited: number;
+  totalVisits: number;
 };
 
 export type TabGroupColor =
@@ -49,6 +50,13 @@ export type ClickActionEvent = {
   toGroup?: never;
 };
 
+export type VisitedTabEvent = {
+  type: 'VISIT_TAB';
+  tabUrl?: string;
+  info?: never;
+  toGroup?: never;
+};
+
 export type ClickEvent = ContextMenuEvent | ClickActionEvent;
 
 export type EventOnCompleteData = {
@@ -56,4 +64,7 @@ export type EventOnCompleteData = {
   groups: Array<TabGroups>;
 };
 
-export type BackgroundMachineEvent = ContextMenuEvent | ClickActionEvent;
+export type BackgroundMachineEvent =
+  | ContextMenuEvent
+  | ClickActionEvent
+  | VisitedTabEvent;

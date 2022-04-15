@@ -37,6 +37,7 @@ export const CommandPaletteOption: React.FC<CommandPaletteOptionProps> = ({
       target="_blank"
       draggable="false"
       onClick={(e) => openURL(e, option.url)}
+      onKeyDown={(e) => e.preventDefault()}
     >
       <GroupTag option={option} ref={tagRef} />
       <img className={styles.optionFavicon} src={option.icon} alt="Icon" />

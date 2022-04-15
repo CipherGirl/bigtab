@@ -1,14 +1,16 @@
+import { toNumber } from 'lodash';
 import React, {
   createRef,
   useEffect,
   useRef,
   useState,
   MouseEvent,
+  LegacyRef,
 } from 'react';
-import useArrowKeyNavigationHook from 'react-arrow-key-navigation-hook';
 import { search } from '../../common/search';
 import { Tab } from '../../common/types';
 import { checkIntersection } from '../../common/utils';
+import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation';
 import { useMachineContext } from '../../hooks/useMachineContext';
 import { CommandPaletteOption } from '../CommandPaletteOption';
 import { TabSearchIcon } from '../TabSearchIcon';
@@ -25,23 +27,90 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 }) => {
   // Context + State
   const context = useMachineContext();
+  const [highlightedTab, setHighlightedTab] = useState<Tab | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGroup, setSelectedGroup] = useState('');
   const [boundingBox, setBoundingBox] = useState<DOMRect>({} as DOMRect);
   const filteredTabs = search(context, searchQuery, selectedGroup);
 
+  // Refs
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Event Handlers
   const onSearchChange = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
     setSearchQuery(e.currentTarget.value);
-    // TODO: Make Escape Work
-    // TODO: Open All Results on Enter
-    // TODO: Open Nth Result on Command/Ctrl+#
-    // TODO: Write Replacement for useArrowKeyNavigation, which supports alt+command navigation
   };
 
-  // Refs
-  const inputRef = useRef<HTMLInputElement>(null);
-  const parentRef = useArrowKeyNavigationHook({ selectors: 'a,input' });
+  const openTab = (tab: Tab) => {
+    window.open(tab.url, '_blank');
+  };
+
+  const openAllTabs = (tabs: Array<Tab>) => tabs.map(openTab);
+
+  const handleEnter = ({ activeElement }: { activeElement: HTMLElement }) => {
+    if (activeElement === inputRef.current || highlightedTab === null) {
+      openAllTabs(filteredTabs.tabs);
+    } else {
+      openTab(highlightedTab);
+    }
+  };
+
+  const handleEscape = () => {
+    setSearchQuery('');
+    setSelectedGroup('');
+    onClickedOutside();
+  };
+
+  const handleNthMeta = ({ event }: { event: KeyboardEvent }) => {
+    openTab(filteredTabs.tabs[toNumber(event.key.slice(-1))]);
+  };
+
+  const handleArrowKey = ({
+    event,
+    currentIndex,
+    availableElements,
+  }: {
+    event: KeyboardEvent;
+    currentIndex: number;
+    availableElements: Array<HTMLElement>;
+  }) => {
+    if (currentIndex === -1) {
+      inputRef?.current?.focus();
+      setHighlightedTab(null);
+    }
+    let nextElement: HTMLElement | undefined;
+    if (!event.metaKey && !event.ctrlKey) {
+      if (event.key === 'ArrowDown') {
+        nextElement = availableElements[currentIndex + 1];
+        setHighlightedTab(filteredTabs.tabs[currentIndex]);
+      } else {
+        nextElement = availableElements[currentIndex - 1];
+        setHighlightedTab(filteredTabs.tabs[currentIndex - 2]);
+      }
+    } else if (event.key === 'ArrowDown') {
+      nextElement = availableElements[availableElements.length - 1];
+      setHighlightedTab(filteredTabs.tabs[filteredTabs.tabs.length - 1]);
+    } else {
+      [, nextElement] = availableElements;
+      setHighlightedTab(filteredTabs.tabs[0]);
+    }
+
+    if (nextElement) {
+      nextElement.focus();
+    }
+    event.preventDefault();
+  };
+
+  const parentRef = useKeyboardNavigation(
+    {
+      onEnter: handleEnter,
+      onEscape: handleEscape,
+      onNthMetaKey: handleNthMeta,
+      onArrowKey: handleArrowKey,
+    },
+    'a,input',
+  );
   const boundaryRef = createRef<HTMLDivElement>();
 
   const groupSelected = (groupId: string) => {
@@ -99,7 +168,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     <>
       <div className={styles.palette} role="dialog" aria-modal="true">
         <div className={styles.overlay} />
-        <div className={styles.wrapper} ref={parentRef}>
+        <div
+          className={styles.wrapper}
+          ref={parentRef as LegacyRef<HTMLDivElement>}
+        >
           <div className={styles.contents} ref={boundaryRef}>
             <div className={styles.search}>
               <TabSearchIcon />

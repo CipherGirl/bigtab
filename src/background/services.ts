@@ -7,7 +7,7 @@ const getAllTabs = async () => {
   const windowTabs = await chrome.tabs.query({
     windowId: currentWindow.id,
   });
-  return windowTabs.filter(({ url }) => url);
+  return windowTabs.filter(({ url }) => url && url.startsWith('http'));
 };
 
 const getGroupData = async (tab: chrome.tabs.Tab) => {
@@ -93,6 +93,8 @@ const transformTabs = async (
     group: toGroup ?? kebabCase(group?.title) ?? '',
     firstCreated: new Date().getTime(),
     lastModified: new Date().getTime(),
+    totalVisits: 0,
+    lastVisited: new Date().getTime(),
     icon: tab.icon,
   }));
 

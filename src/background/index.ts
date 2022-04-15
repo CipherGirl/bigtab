@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import { BackgroundMachineContext } from '../common/types';
+import { BackgroundMachineContext, Tab } from '../common/types';
 import { setupContextMenus } from './menus';
 import { startMachine } from './interpreter';
 import { updateStorage } from '../common/storage';
@@ -53,6 +53,28 @@ export const hookContextMenus = async () => {
   chrome.contextMenus.onClicked.addListener(contextMenuBinding);
 };
 
+const visitHook = async (tab: chrome.tabs.Tab) => {
+  if (BACKGROUND?.state?.context) {
+    const clippedUrl = tab?.url;
+    if (clippedUrl && typeof clippedUrl === 'string') {
+      const matchingUrls = BACKGROUND?.state?.context.tabs.filter(
+        (contextTab: Tab) =>
+          contextTab.url.split('?')[0] === (clippedUrl.split('?')[0] ?? ''),
+      );
+      if (matchingUrls.length > 0) {
+        BACKGROUND.send({ type: 'VISIT_TAB', tabUrl: tab.url });
+      }
+    }
+  }
+};
+
+const hookPageVisits = () => {
+  chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
+    const tab: chrome.tabs.Tab = await chrome.tabs.get(tabId);
+    if (changeInfo.url) await visitHook(tab);
+  });
+};
+
 const main = async () => {
   // Setup Listeners
   await setupListeners();
@@ -63,7 +85,8 @@ const main = async () => {
   // Create Context Menu
   await hookContextMenus();
 
-  // TODO: Subscribe to Page Visit Events
+  // Subscribe to Page Visit Events
+  await hookPageVisits();
 };
 
 main();

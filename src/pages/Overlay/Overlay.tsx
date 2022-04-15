@@ -11,7 +11,11 @@ export const Overlay: React.FC = () => {
   useEffect(() => {
     document.addEventListener(
       'keydown',
-      (e) => (e.metaKey || e.ctrlKey) && e.code === 'KeyJ' && toggle(),
+      (e) =>
+        (e.metaKey || e.ctrlKey) &&
+        e.code === 'KeyJ' &&
+        toggle() &&
+        e.preventDefault(),
     );
   }, []);
 

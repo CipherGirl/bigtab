@@ -37,6 +37,7 @@
     "react": "^18.0.0",
     "react-arrow-key-navigation-hook": "^1.0.2",
     "react-dom": "^18.0.0",
+    "ts-pattern": "^4.0.1",
     "xstate": "^4.30.6"
   },
   "devDependencies": {

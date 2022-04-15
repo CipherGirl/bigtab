@@ -44,6 +44,7 @@ specifiers:
   react-dom: ^18.0.0
   rollup-plugin-chrome-extension: ^4.0.1-18
   ts-jest: ^27.1.4
+  ts-pattern: ^4.0.1
   typescript: ^4.6.3
   vite: ^2.9.1
   xstate: ^4.30.6
@@ -59,6 +60,7 @@ dependencies:
   react: 18.0.0
   react-arrow-key-navigation-hook: 1.0.2_react@18.0.0
   react-dom: 18.0.0_react@18.0.0
+  ts-pattern: 4.0.1
   xstate: 4.30.6
 
 devDependencies:
@@ -5938,6 +5940,10 @@ packages:
       v8-compile-cache-lib: 3.0.0
       yn: 3.1.1
     dev: true
+
+  /ts-pattern/4.0.1:
+    resolution: {integrity: sha512-UaEFiG0xvCAa0tXBi242rD2WU28RlurzQe27t7vc2+3difhtA58Q6BiFl3YQbDlDiWfantdP05YICJPpGo/ulg==}
+    dev: false
 
   /tsconfig-paths/3.14.1:
     resolution: {integrity: sha512-fxDhWnFSLt3VuTwtvJt5fpwxBHg5AdKWMsgcPOOIilyjymcYVZoCQF8fvFRezCNfblEXmi+PcM1eYHeOAgXCOQ==}
