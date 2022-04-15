@@ -38,11 +38,7 @@ const onChangeBinding = async (
     if (!isEqual(prevContext?.groups, context.groups)) {
       await setupContextMenus(context);
     }
-    try {
-      await sendContext(context);
-    } catch (error) {
-      // console.log(error);
-    }
+    await sendContext(context);
     console.log(context);
   }
 };

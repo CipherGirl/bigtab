@@ -24,7 +24,10 @@
 }
 
 .optionFavicon {
+  margin: 0 !important;
   margin-right: 10px !important;
+  width: 16px !important;
+  height: 16px !important;
 }
 
 .option {
@@ -38,6 +41,18 @@
   width: fit-content !important;
   white-space: nowrap !important;
   box-sizing: border-box !important;
+  font-feature-settings: 'kern', 'liga', 'clig', 'calt' !important;
+  font-kerning: normal !important;
+  font-stretch: 100% !important;
+  font-style: normal !important;
+  font-variant-caps: normal !important;
+  font-variant-east-asian: normal !important;
+  font-variant-ligatures: normal !important;
+  font-variant-numeric: normal !important;
+  text-decoration: none !important;
+  text-decoration-thickness: auto !important;
+  text-size-adjust: 100% !important;
+  overflow-wrap: break-word !important;
 }
 
 .option::-webkit-scrollbar {
