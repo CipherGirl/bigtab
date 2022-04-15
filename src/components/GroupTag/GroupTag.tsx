@@ -27,60 +27,60 @@ const GroupTag = forwardRef<HTMLDivElement, GroupTagProps>(
       // SOURCE: https://coolors.co/
       if (!group) {
         return {
-          color: '#79797C',
-          backgroundColor: '#E0E0E1',
+          color: '#515151',
+          backgroundColor: '#E0E0E0',
         };
       }
       switch (group.color) {
         case 'orange':
           return {
-            color: '#FF621F',
-            backgroundColor: '#FF9B70',
+            color: '#2B2B2B',
+            backgroundColor: '#FF9F6B',
           };
         case 'grey':
           return {
-            color: '#79797C',
-            backgroundColor: '#E0E0E1',
+            color: '#515151',
+            backgroundColor: '#E0E0E0',
           };
         case 'blue':
           return {
-            color: '#0A2463',
-            backgroundColor: '#5885EE',
+            color: '#113EA7',
+            backgroundColor: '#D5E2FC',
           };
         case 'red':
           return {
-            color: '#F00511',
-            backgroundColor: '#FC5F67',
+            color: '#C40812',
+            backgroundColor: '#FFE0E0',
           };
         case 'yellow':
           return {
-            color: '#E8B321',
-            backgroundColor: '#F7E5B6',
+            color: '#4D4D4D',
+            backgroundColor: '#F8D472',
           };
         case 'green':
           return {
-            color: '#037758',
-            backgroundColor: '#06D6A0',
+            color: '#033F2F',
+            backgroundColor: '#B5DEBB',
           };
         case 'pink':
           return {
-            color: '#FF3370',
-            backgroundColor: '#FFE1EA',
+            color: '#D1007A',
+            backgroundColor: '#FFF0F4',
           };
         case 'purple':
           return {
-            color: '#662E9B',
-            backgroundColor: '#AF81D9',
+            color: '#53267E',
+            backgroundColor: '#DDCDEF',
           };
         case 'cyan':
           return {
-            color: '#118AB2',
-            backgroundColor: '#6ACFF1',
+            color: '#12586E',
+            backgroundColor: '#E1F9F9',
           };
         default:
           return {
-            color: '#79797C',
-            backgroundColor: '#E0E0E1',
+            color: '#515151',
+            backgroundColor: '#E0E0E0',
           };
       }
     };
